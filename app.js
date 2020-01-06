@@ -5,13 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cron = require('node-cron');
 const carService = require('./services/cars');
+const chatService = require('./services/chat');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var carsRouter = require('./routes/cars');
 
-cron.schedule('*/10 * * * *', async () => {
-  await carService.test();
+cron.schedule('*/30 * * * * *', async () => {
+  await carService.checkUpdate();
 });
 
 var app = express();
@@ -44,6 +45,11 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+app.use(async function(err, req, res, next) {
+  await chatService.add();
+  await chatService.remove();
 });
 
 module.exports = app;
