@@ -23,10 +23,21 @@ module.exports.checkUpdate = async () => {
         const infoResponse = await request.get(`https://developers.ria.com/auto/info`)
           .query(getInfoRequest);
 
-        const { markName, modelName, USD, photoData: { seoLinkB }, autoData: { year }, linkToView } = JSON.parse(infoResponse.text);
+        const { markName, markId, modelId, modelName, USD, photoData: { seoLinkB }, autoData: { year }, linkToView } = JSON.parse(infoResponse.text);
 
-        await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `${markName} ${modelName} (${year}) ${USD}$. Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
-    }
+        const getPriceRequest = {
+          api_key: KEYS.token,
+          marka_id: markId,
+          model_id: modelId,
+        };
+
+        const priceResponse = await request.get(`https://developers.ria.com/auto/average_price`)
+          .query(getPriceRequest);
+
+        const { interQuartileMean, arithmeticMean } = JSON.parse(priceResponse.text);
+
+        await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${arithmeticMean.toFixed()}, ${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
+      }
     console.log('finish checking!');
   }
 }
