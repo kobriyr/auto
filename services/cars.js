@@ -22,7 +22,7 @@ module.exports.checkUpdate = async () => {
         });
 
         if ((interQuartileMean - 1000) > USD) {
-          await Promise.all(chats.map(chatId => bot.sendMessage('476213787', `${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
+          await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
         }
       }
     console.log('finish checking!');
@@ -41,7 +41,7 @@ module.exports.checkDeo = async () => {
       for (let i = 0; i < listDeo.length; i += 1) {
         const {USD, autoData: { year }, linkToView } = await riaRequest.getInfoAboutAuto(listDeo[i]);
 
-        await Promise.all(chats.map(chatId => bot.sendMessage('476213787', `DEO (${year}) ${USD}$. https://auto.ria.com${linkToView}`)));
+        await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `DEO (${year}) ${USD}$. https://auto.ria.com${linkToView}`)));
       }
       console.log('finish checking deo!');
     }
