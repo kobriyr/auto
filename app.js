@@ -13,7 +13,7 @@ var carsRouter = require('./routes/cars');
 
 cron.schedule('*/30 * * * * *', async () => {
   await carService.checkUpdate();
-  // await carService.checkDeo();
+  await carService.checkDeo();
 });
 
 var app = express();

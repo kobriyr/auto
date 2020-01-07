@@ -100,6 +100,8 @@ async function getDeo () {
     api_key: KEYS.token,
     category_id: 1,
     s_yers: [],
+    marka_id: [],
+    model_id: [],
     price_do:2500,
     currency: 1,
     order_by: 7,
@@ -107,6 +109,8 @@ async function getDeo () {
   };
 
   searchRequest.s_yers[0] = 2007;
+  searchRequest.marka_id[0] = 18;
+  searchRequest.model_id[0] = 161;
 
   const response = await request.get(`https://developers.ria.com/auto/search`)
     .query(searchRequest);
