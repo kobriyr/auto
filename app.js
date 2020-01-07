@@ -11,7 +11,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var carsRouter = require('./routes/cars');
 
-cron.schedule('*/30 * * * * *', async () => {
+cron.schedule('*/10 * * * * *', async () => {
   await carService.checkUpdate();
   await carService.checkDeo();
 });
