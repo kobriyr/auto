@@ -29,6 +29,7 @@ module.exports.checkUpdate = async () => {
           api_key: KEYS.token,
           marka_id: markId,
           model_id: modelId,
+          yers: year
         };
 
         const priceResponse = await request.get(`https://developers.ria.com/auto/average_price`)
