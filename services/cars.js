@@ -34,9 +34,11 @@ module.exports.checkUpdate = async () => {
         const priceResponse = await request.get(`https://developers.ria.com/auto/average_price`)
           .query(getPriceRequest);
 
-        const { interQuartileMean, arithmeticMean } = JSON.parse(priceResponse.text);
+        const { interQuartileMean } = JSON.parse(priceResponse.text);
 
-        await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${arithmeticMean.toFixed()}, ${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
+        if ((interQuartileMean - 1000) > USD) {
+          await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
+        }
       }
     console.log('finish checking!');
   }
