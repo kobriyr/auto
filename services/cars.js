@@ -45,6 +45,32 @@ module.exports.checkUpdate = async () => {
 }
 };
 
+module.exports.checkDeo = async () => {
+  const chats = await chatService.getChats();
+
+  if (chats.length) {
+    console.log('start checking deo!', new Date());
+    const listDeo = await getDeo();
+    console.log('new deo', listDeo);
+    if (listDeo) {
+      for (let i = 0; i < listDeo.length; i += 1) {
+        const getInfoRequest = {
+          api_key: KEYS.token,
+          auto_id: listDeo[i],
+        };
+
+        const infoResponse = await request.get(`https://developers.ria.com/auto/info`)
+          .query(getInfoRequest);
+
+        const {USD, autoData: { year }, linkToView } = JSON.parse(infoResponse.text);
+
+        await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `DEO (${year}) ${USD}$. https://auto.ria.com${linkToView}`)));
+      }
+      console.log('finish checking deo!');
+    }
+  }
+};
+
 async function getAuto () {
   const searchRequest = {
     noCache: 1,
@@ -68,9 +94,29 @@ async function getAuto () {
   return compareList(JSON.parse(response.text));
 }
 
-async function compareList(list) {
+async function getDeo () {
+  const searchRequest = {
+    noCache: 1,
+    api_key: KEYS.token,
+    category_id: 1,
+    s_yers: [],
+    price_do:2500,
+    currency: 1,
+    order_by: 7,
+    custom: 3,
+  };
+
+  searchRequest.s_yers[0] = 2007;
+
+  const response = await request.get(`https://developers.ria.com/auto/search`)
+    .query(searchRequest);
+
+  return compareList(JSON.parse(response.text), 'deo');
+}
+
+async function compareList(list, type = 'car') {
   const response = [];
-  const lastLocal = await fs.readFileSync(path.join(__dirname, '../db/car.txt'), 'utf8');
+  const lastLocal = await fs.readFileSync(path.join(__dirname, `../db/${type}.txt`), 'utf8');
 
   if (lastLocal) {
     const index = list.result.search_result.ids.indexOf(lastLocal);
@@ -80,12 +126,12 @@ async function compareList(list) {
     }
 
     if (index) {
-      await fs.writeFileSync(path.join(__dirname, '../db/car.txt'), list.result.search_result.ids[0], 'utf8');
+      await fs.writeFileSync(path.join(__dirname, `../db/${type}.txt`), list.result.search_result.ids[0], 'utf8');
     }
 
     return response;
   }
 
-  await fs.writeFileSync(path.join(__dirname, '../db/car.txt'), list.result.search_result.ids[0], 'utf8');
+  await fs.writeFileSync(path.join(__dirname, `../db/${type}.txt`), list.result.search_result.ids[0], 'utf8');
   return list.result.search_result.ids;
 };
