@@ -7,10 +7,14 @@ const chatService = require('./src/services/chat');
 
 const indexRouter = require('./routes/index');
 
+const db = require('./src/configs/db');
+
 // run jobs
 require('./jobs');
 
 const app = express();
+
+db.connect();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

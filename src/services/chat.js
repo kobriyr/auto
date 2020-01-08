@@ -1,7 +1,6 @@
-const fs = require('fs');
-const path = require('path');
+const { TelegramChat } = require('../models');
 
 module.exports.getChats = async () => {
-  const chatsInfo = await fs.readFileSync(path.join(__dirname, '../db/chats.txt'), 'utf8');
-  return (chatsInfo || '').split(',').filter(item => item) || [];
+  const chats = await TelegramChat.find({ active: true });
+  return chats.map(({ chatId }) => chatId);
 };

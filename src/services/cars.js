@@ -1,7 +1,7 @@
-require('dotenv').config();
 const chatService = require('./chat');
 const riaRequest = require('../utils/ria-request');
 const telegram = require('../utils/telegram-bot.js');
+const { Brand, Model } = require('../models');
 
 module.exports.checkUpdate = async () => {
   const chats = await chatService.getChats();
@@ -12,6 +12,36 @@ module.exports.checkUpdate = async () => {
     if (listNewAuto) {
       for (let i = 0; i < listNewAuto.length; i += 1) {
         const { markName, markId, modelId, modelName, USD, photoData: { seoLinkB }, autoData: { year }, linkToView } = await riaRequest.getInfoAboutAuto(listNewAuto[i]);
+
+        const brand = await Brand.findOne({
+          name: markName,
+          riaId: markId
+        });
+
+        if (!brand) {
+          await Brand({
+            name: markName,
+            riaId: markId
+          }).save();
+        }
+
+        const model = await Model.findOne({
+          name: modelName,
+          riaId: modelId,
+        });
+
+        if (model) {
+          model.allowedYears = [...new Set([...model.allowedYears, year])];
+          await model.save();
+        } else {
+          await Model({
+            name: modelName,
+            riaId: modelId,
+            allowedYears: [year]
+          }).save();
+        }
+
+
 
         const { interQuartileMean } = await riaRequest.getAutoPrice({
           marka_id: markId,
