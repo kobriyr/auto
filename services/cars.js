@@ -1,6 +1,5 @@
-const KEYS = require('../consts/keys');
 const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(KEYS.telegram, {polling: true});
+const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, {polling: true});
 const chatService = require('./chat');
 const riaRequest = require('../utils/ria-request');
 

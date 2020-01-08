@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const KEYS = require('../consts/keys');
 const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(KEYS.telegram, {polling: true});
+const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, {polling: true});
 
 bot.on('message', async (msg) => {
   let allChats = await module.exports.getChats();

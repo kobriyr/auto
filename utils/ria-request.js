@@ -2,9 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const request = require('superagent');
 const moment = require('moment');
-const KEYS = require('../consts/keys');
 const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(KEYS.telegram, {polling: true});
+const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, {polling: true});
 let countRequests = 0;
 
 module.exports.getAuto = async (type) => {
@@ -15,7 +14,6 @@ module.exports.getAuto = async (type) => {
 
 module.exports.getInfoAboutAuto = async (auto_id) => {
   const getInfoRequest = {
-    api_key: KEYS.token,
     auto_id,
   };
 
@@ -24,7 +22,6 @@ module.exports.getInfoAboutAuto = async (auto_id) => {
 
 module.exports.getAutoPrice = async ({ marka_id, model_id, yers }) => {
   const getPriceRequest = {
-    api_key: KEYS.token,
     marka_id,
     model_id,
     yers
@@ -37,7 +34,6 @@ function getSearchParams (type) {
   if (type === 'deo') {
     const searchRequest = {
       noCache: 1,
-      api_key: KEYS.token,
       category_id: 1,
       s_yers: [],
       marka_id: [],
@@ -57,7 +53,6 @@ function getSearchParams (type) {
 
   const searchRequest = {
     noCache: 1,
-    api_key: KEYS.token,
     category_id: 1,
     s_yers: [],
     po_yers: [],
@@ -97,6 +92,7 @@ async function compareList(list, type = 'car') {
 };
 
 async function sendRequest(url, query) {
+  Object.assign(query, { api_key: countRequests < 990 ? process.env.AUTO_RIA_TOKEN_1 : process.env.AUTO_RIA_TOKEN_2 });
   const response = await request.get(url).query(query);
   countRequests += 1;
 
