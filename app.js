@@ -1,20 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cron = require('node-cron');
-const carService = require('./services/cars');
-const chatService = require('./services/chat');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const chatService = require('./src/services/chat');
 
-var indexRouter = require('./routes/index');
+const indexRouter = require('./routes/index');
 
-cron.schedule('*/30 * * * * *', async () => {
-  await carService.checkUpdate();
-  await carService.checkDeo();
-});
+// run jobs
+require('./jobs');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

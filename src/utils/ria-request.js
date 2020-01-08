@@ -1,10 +1,10 @@
-require('dotenv').config()
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const request = require('superagent');
 const moment = require('moment');
-const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, {polling: true});
+const telegram = require('./telegram-bot.js');
+const vars = require('../../const/vars');
 let countRequests = 0;
 
 module.exports.getAuto = async (type) => {
@@ -97,7 +97,7 @@ async function sendRequest(url, query) {
   countRequests += 1;
 
   if(moment().diff(moment().startOf('hour'), 'seconds') === 0) {
-    await bot.sendMessage('476213787', `Report: count of requests per ${moment().format('HH')} - ${countRequests}`);
+    await telegram.sendMsg(vars.supportTelegtamChat, `Report: count of requests per ${moment().format('HH')} - ${countRequests}`);
     countRequests = 0;
   }
 

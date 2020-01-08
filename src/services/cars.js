@@ -1,14 +1,12 @@
-require('dotenv').config()
-const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, {polling: true});
+require('dotenv').config();
 const chatService = require('./chat');
 const riaRequest = require('../utils/ria-request');
+const telegram = require('../utils/telegram-bot.js');
 
 module.exports.checkUpdate = async () => {
   const chats = await chatService.getChats();
 
   if (chats.length) {
-    console.log('start checking!');
     const listNewAuto = await riaRequest.getAuto();
     console.log('new autos', listNewAuto);
     if (listNewAuto) {
@@ -22,10 +20,9 @@ module.exports.checkUpdate = async () => {
         });
 
         if ((interQuartileMean - 1000) > USD) {
-          await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
+          await Promise.all(chats.map(chatId => telegram.sendMsg(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
         }
       }
-    console.log('finish checking!');
   }
 }
 };
@@ -34,16 +31,14 @@ module.exports.checkDeo = async () => {
   const chats = await chatService.getChats();
 
   if (chats.length) {
-    console.log('start checking deo!');
     const listDeo = await riaRequest.getAuto('deo');
     console.log('new deo', listDeo);
     if (listDeo) {
       for (let i = 0; i < listDeo.length; i += 1) {
         const {USD, autoData: { year }, linkToView } = await riaRequest.getInfoAboutAuto(listDeo[i]);
 
-        await Promise.all(chats.map(chatId => bot.sendMessage(chatId, `DEO (${year}) ${USD}$. https://auto.ria.com${linkToView}`)));
+        await Promise.all(chats.map(chatId => telegram.sendMsg(chatId, `DEO (${year}) ${USD}$. https://auto.ria.com${linkToView}`)));
       }
-      console.log('finish checking deo!');
     }
   }
 };
