@@ -57,14 +57,13 @@ function getSearchParams (type) {
     s_yers: [],
     po_yers: [],
     price_ot:4500,
-    price_do:10000,
+    price_do:11000,
     currency: 1,
     order_by: 7,
     custom: 3,
   };
 
   searchRequest.s_yers[0] = 2007;
-  searchRequest.po_yers[0] = 2013;
 
   return searchRequest;
 }
