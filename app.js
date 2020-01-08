@@ -8,10 +8,8 @@ const carService = require('./services/cars');
 const chatService = require('./services/chat');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var carsRouter = require('./routes/cars');
 
-cron.schedule('*/10 * * * * *', async () => {
+cron.schedule('*/30 * * * * *', async () => {
   await carService.checkUpdate();
   await carService.checkDeo();
 });
@@ -29,8 +27,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/cars', carsRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
