@@ -13,16 +13,18 @@ module.exports.checkUpdate = async () => {
       for (let i = 0; i < listNewAuto.length; i += 1) {
         const { markName, markId, modelId, modelName, USD, photoData: { seoLinkB }, autoData: { year }, linkToView } = await riaRequest.getInfoAboutAuto(listNewAuto[i]);
 
-        const brand = await Brand.findOne({
+        let brand = await Brand.findOne({
           name: markName,
           riaId: markId
         });
 
         if (!brand) {
-          await Brand({
+          brand = Brand({
             name: markName,
             riaId: markId
-          }).save();
+          });
+
+          await brand.save();
         }
 
         const model = await Model.findOne({
@@ -32,12 +34,16 @@ module.exports.checkUpdate = async () => {
 
         if (model) {
           model.allowedYears = [...new Set([...model.allowedYears, year])];
+          if (!model.brandId) {
+            model.brandId = brand._id;
+          }
           await model.save();
         } else {
           await Model({
             name: modelName,
             riaId: modelId,
-            allowedYears: [year]
+            allowedYears: [year],
+            brandId: brand._id,
           }).save();
         }
 
