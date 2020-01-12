@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
 
   try {
     const user = await authService.validateToken(token);
-    req.user = await User.findOne({ _id: user._id }, { email: 1, firstName: 1, lastName: 1, _id: 0 });
+    req.user = await User.findOne({ _id: user._id }, { email: 1, firstName: 1, lastName: 1 });
     next();
   } catch (error) {
     res.status(401).json({success: false, message: res.__('Invalid Token.')});

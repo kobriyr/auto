@@ -72,3 +72,26 @@ module.exports.checkDeo = async () => {
     }
   }
 };
+
+
+module.exports.getAveragePrice = async ({ brandId, modelId, year }) => {
+  if (brandId && modelId) {
+    const brand = await Brand.findById(brandId);
+    if (brand) {
+      const model = await Model.findById(modelId);
+      if (model) {
+        const { interQuartileMean } = await riaRequest.getAutoPrice({
+          marka_id: brand.riaId,
+          model_id: model.riaId,
+          yers: year
+        });
+
+        if (interQuartileMean) {
+          return interQuartileMean.toFixed();
+        }
+      }
+    }
+  }
+
+  return 0;
+};
