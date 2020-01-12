@@ -12,4 +12,14 @@ router.get('/', authenticated, async (req, res) => {
   return res.status(200).send(filters);
 });
 
+router.post('/', authenticated, async (req, res) => {
+  const model = await filterService.create(req.body, req.user);
+  return res.status(200).send({ model });
+});
+
+router.get('/:filter_id', authenticated, async (req, res) => {
+  const filter = await filterService.get(req.params.filter_id, req.user);
+  return res.status(200).send(filter);
+});
+
 module.exports = router;

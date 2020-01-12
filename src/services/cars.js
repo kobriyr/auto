@@ -74,11 +74,11 @@ module.exports.checkDeo = async () => {
 };
 
 
-module.exports.getAveragePrice = async ({ brandId, modelId, year }) => {
-  if (brandId && modelId) {
-    const brand = await Brand.findById(brandId);
+module.exports.getAveragePrice = async ({ brand, model, year }) => {
+  if (brand && model) {
+    const brand = await Brand.findById(brand);
     if (brand) {
-      const model = await Model.findById(modelId);
+      const model = await Model.findById(model);
       if (model) {
         const { interQuartileMean } = await riaRequest.getAutoPrice({
           marka_id: brand.riaId,

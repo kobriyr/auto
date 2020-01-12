@@ -18,6 +18,30 @@ class FilterService {
       filters
     };
   }
+
+  async get (filter, user) {
+    const query = {
+      user: user._id || user,
+      _id: filter,
+      active: true
+    };
+
+    return Filter.findOne(query);
+  }
+
+  async create ({ brand, model, year, price }, user) {
+    if (!brand || !model || !year || !price) {
+      return {};
+    }
+
+    return Filter({
+      brand,
+      model,
+      year,
+      price,
+      user: user._id || user
+    }).save();
+  }
 }
 
 module.exports = new FilterService();
