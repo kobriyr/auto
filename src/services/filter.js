@@ -11,7 +11,10 @@ class FilterService {
     const filters = await Filter.find(query)
       .sort({[sortBy]: order})
       .skip(page*limit)
-      .limit(10);
+      .limit(10)
+      .populate('brand')
+      .populate('model')
+      .lean();
 
     return {
       count: totalCount,
