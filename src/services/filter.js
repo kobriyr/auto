@@ -23,6 +23,10 @@ class FilterService {
   }
 
   async get (filter, user) {
+    if (!filter) {
+      throw new Error('Required parameters is missing');
+    }
+
     const query = {
       user: user._id || user,
       _id: filter,

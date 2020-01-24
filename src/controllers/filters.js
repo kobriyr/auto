@@ -18,8 +18,13 @@ router.post('/', authenticated, async (req, res) => {
 });
 
 router.get('/:filter_id', authenticated, async (req, res) => {
-  const filter = await filterService.get(req.params.filter_id, req.user);
-  return res.status(200).send(filter);
+  try {
+    const filter = await filterService.get(req.params.filter_id, req.user);
+    return res.status(200).send(filter);
+  } catch (e) {
+    console.log('Error', e.message);
+    return res.status(400).send(e.message);
+  }
 });
 
 module.exports = router;
