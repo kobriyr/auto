@@ -49,6 +49,38 @@ class FilterService {
       user: user._id || user
     }).save();
   }
+
+  async update (id, { brand, model, year, price }, user) {
+    if (!brand || !model || !year || !price || !id) {
+      throw new Error('Required parameters is missing');
+    }
+
+    const filter = await Filter.findById(id);
+
+    if (!filter) {
+      throw new Error('Required parameters is missing');
+    }
+
+    return filter.set({
+      ...filter,
+      brand,
+      model,
+      year,
+      price,
+    }).save();
+  }
+
+  async delete (id, user) {
+    if (!id) {
+      throw new Error('Required parameters is missing');
+    }
+
+    await Filter.remove({
+      _id: id,
+      user: user._id || user
+    });
+    return true;
+  }
 }
 
 module.exports = new FilterService();

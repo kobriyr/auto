@@ -75,23 +75,29 @@ module.exports.checkDeo = async () => {
 
 
 module.exports.getAveragePrice = async ({ brand, model, year }) => {
-  if (brand && model) {
-    const brand = await Brand.findById(brand);
-    if (brand) {
-      const model = await Model.findById(model);
-      if (model) {
-        const { interQuartileMean } = await riaRequest.getAutoPrice({
-          marka_id: brand.riaId,
-          model_id: model.riaId,
-          yers: year
-        });
+  let interQuartileMean = 0;
 
-        if (interQuartileMean) {
-          return interQuartileMean.toFixed();
+  if (brand && model) {
+    try {
+      const brandDB = await Brand.findById(brand);
+      if (brandDB) {
+        const modelDB = await Model.findById(model);
+        if (model) {
+          const { interQuartileMean } = await riaRequest.getAutoPrice({
+            marka_id: brandDB.riaId,
+            model_id: modelDB.riaId,
+            yers: year
+          });
+
+          if (interQuartileMean) {
+            return interQuartileMean.toFixed();
+          }
         }
       }
+    } catch (e) {
+      console.error('Error:', e.message);
     }
   }
 
-  return 0;
+  return interQuartileMean;
 };
