@@ -19,12 +19,10 @@ module.exports.checkUpdate = async () => {
         });
 
         if (!brand) {
-          brand = Brand({
+          brand = await Brand({
             name: markName,
             riaId: markId
-          });
-
-          await brand.save();
+          }).save();
         }
 
         let model = await Model.findOne({
