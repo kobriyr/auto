@@ -55,7 +55,7 @@ module.exports.checkUpdate = async () => {
           yers: year
         });
 
-        if ((interQuartileMean - 1000) > USD) {
+        if ((interQuartileMean - 1500) > USD) {
           await Promise.all(chats.map(chatId => telegram.sendMsg(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
         }
       }
