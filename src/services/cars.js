@@ -1,7 +1,7 @@
 const chatService = require('./chat');
 const riaRequest = require('../utils/ria-request');
 const telegram = require('../utils/telegram-bot.js');
-const { Brand, Model, Fitler } = require('../models');
+const { Brand, Model, Filter } = require('../models');
 
 module.exports.checkUpdate = async () => {
   const chats = await chatService.getChats();
@@ -51,10 +51,10 @@ module.exports.checkUpdate = async () => {
           yers: year
         });
 
-        if ((interQuartileMean - 1500) > USD) {
+        if ((interQuartileMean - 1300) > USD) {
           await Promise.all(chats.map(chatId => telegram.sendMsg(chatId, `${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
         } else {
-          const filterExist = await Fitler.findOne({ brand: brand._id, model: model._id, year, price: { $gte: interQuartileMean }, active: true });
+          const filterExist = await Filter.findOne({ brand: brand._id, model: model._id, year, price: { $gte: interQuartileMean }, active: true });
 
           if (filterExist) {
             await Promise.all(chats.map(chatId => telegram.sendMsg(chatId, `From filter: ${markName} ${modelName} (${year}) ${USD}$. (${interQuartileMean.toFixed()}) Image: ${seoLinkB}. https://auto.ria.com${linkToView}`)));
