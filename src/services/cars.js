@@ -109,3 +109,10 @@ module.exports.getAveragePrice = async ({ brand, model, year }) => {
 
   return interQuartileMean;
 };
+
+module.exports.addAdvertisement = async () => {
+  const advertisementId = await riaRequest.createAdvertisement();
+  await riaRequest.addFotos(advertisementId);
+  // await riaRequest.deleteAdvertisement('26891009');
+  console.log('Done!')
+};
